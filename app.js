@@ -9,7 +9,10 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
   const normHead = k => noAcc(k).toUpperCase().replace(/[^A-Z0-9]/g, '');   // "⏱️ DURÉE" -> "DUREE"
   const pref = { get: (k, d) => { try { return localStorage.getItem(k) || d; } catch { return d; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch {} } };
   // POST en text/plain (pas de preflight) : la réponse du script reste lisible, les erreurs sont détectées.
-  const apiGet = async s => (await fetch(`${API_URL}?sheet=${encodeURIComponent(s)}`)).json();
+  const apiGet = async s => {
+    const t = await (await fetch(`${API_URL}?sheet=${encodeURIComponent(s)}`)).text();
+    try { return JSON.parse(t); } catch { throw new Error('NONJSON'); }   // le script a répondu par une page HTML (autorisation, erreur…)
+  };
   const apiPost = async b => (await fetch(API_URL, { method: 'POST', body: JSON.stringify(b) })).json();
 
   const S = { games: [], members: [], ratings: {}, wishes: {}, user: '', admin: false, view: pref.get('ludo_view', matchMedia('(max-width:700px)').matches ? 'list' : 'grid'), tab: 'catalogue' };
@@ -27,11 +30,15 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
   }
   async function load() {
     $('#catalogue').innerHTML = '<p class="empty">Chargement de la ludothèque…</p>';
+    S.loadError = '';
     try {
-      const [u, g, n, w] = await Promise.all([apiGet('users'), apiGet('jeux'), apiGet('Notes'), apiGet('Souhaits')]);
+      const [u, g, n, w] = await Promise.all([apiGet('users'), apiGet('jeux'), apiGet('Notes').catch(() => null), apiGet('Souhaits').catch(() => null)]);
       S.members = (Array.isArray(u) ? u : []).map(x => ({ name: noAcc(x.prenom), admin: x.admin === true })).filter(x => x.name)
         .sort((a, b) => a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }));
       S.games = (Array.isArray(g) ? g : []).map(parseGame).filter(Boolean).map((x, i) => ({ ...x, i }));
+      if (!S.members.length) throw new Error('NOUSERS');
+      if (!S.games.length) throw new Error('NOGAMES');
+      if (n === null) toast('Notes momentanément indisponibles.');
       S.ratings = {};
       (Array.isArray(n) ? n : []).forEach(r => {
         const u2 = noAcc(r.username), k = keyOf(r.gameTitle), s = +r.score;
@@ -42,8 +49,12 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
       S.wishes = {};
       (Array.isArray(w) ? w : []).forEach(r => { const u2 = noAcc(r.username), k = keyOf(r.gameTitle); if (u2 && k) (S.wishes[u2] = S.wishes[u2] || {})[k] = true; });
       return true;
-    } catch {
-      $('#catalogue').innerHTML = '<p class="error">Impossible de joindre le Google Sheet. Réessayez dans un instant.</p>';
+    } catch (err) {
+      const why = { NONJSON: "Le script Google a renvoyé une page à la place des données (autorisation à renouveler ou mauvaise version déployée).",
+        NOGAMES: "Le Google Sheet répond, mais l'onglet « jeux » est introuvable ou vide.",
+        NOUSERS: "Le Google Sheet répond, mais l'onglet « users » est introuvable ou vide." }[err.message] || "Connexion impossible au script Google. Vérifiez la connexion puis réessayez.";
+      S.loadError = `<div class="card empty-card"><i class="fa-solid fa-triangle-exclamation ic-rose big"></i><h3>Données indisponibles</h3><p class="muted">${esc(why)}</p><button class="btn primary" id="retryLoad">Réessayer</button></div>`;
+      $('#catalogue').innerHTML = S.loadError;
       return false;
     }
   }
@@ -87,7 +98,8 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
     const s = e.target.closest('.star'), d = e.target.closest('.desc-btn');
     if (s) rate(+s.dataset.i, +s.dataset.star);
     const h = e.target.closest('.wish'); if (h) toggleWish(+h.dataset.i);
-    const o = e.target.closest('[data-open]'); if (o && !e.target.closest('button, a, select, input')) openDetail(+o.dataset.open);
+    if (e.target.closest('#retryLoad')) location.reload();
+    const o = e.target.closest('[data-open]'); if (o && !e.target.closest('button, a, select, input, .more')) toggleOpen(o);
     if (d) { const g = S.games[+d.dataset.i]; $('#descTitle').textContent = g.title; $('#descText').textContent = g.desc; $('#descDialog').showModal(); }
   });
   /* ---------- Bulle de description au survol ---------- */
@@ -129,17 +141,21 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
   const isMobile = () => matchMedia('(max-width:700px)').matches;
   const thumb = g => /^https?:\/\//i.test(g.img) ? `<img src="${esc(g.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : '<span aria-hidden="true">🎲</span>';
   const mineTag = g => mine(g) ? `<span class="mine">★ ${mine(g)}</span>` : '';
-  const tile = g => `<article class="tile" data-open="${g.i}" tabindex="0" role="button" aria-label="${esc(g.title)}"><div class="tcover">${thumb(g)}${wishBtn(g)}${mineTag(g)}</div>
-    <div class="tinfo"><b>${esc(g.title)}</b><small>⏱ ${esc(g.duree)} · 👥 ${esc(g.players)}</small></div></article>`;
-  const row = g => `<article class="row" data-open="${g.i}" tabindex="0" role="button" aria-label="${esc(g.title)}"><div class="rthumb">${thumb(g)}</div>
-    <div class="rinfo"><b>${esc(g.title)}</b><small>⏱ ${esc(g.duree)} · 👥 ${esc(g.players)}${g.niveau ? ' · ' + esc(g.niveau) : ''}</small></div>${mineTag(g)}${wishBtn(g, true)}</article>`;
-  let openIdx = -1;
-  function renderDetail() {
-    const g = S.games[openIdx]; if (!g) return;
-    $('#gameDetail').innerHTML = `${cover(g)}<h2>${esc(g.title)}</h2><div class="chips">${chips(g)}</div>${g.desc ? `<p class="desc">${esc(g.desc)}</p>` : ''}
-      <div class="gfoot"><span class="muted b">Ma note :</span><div>${stars(g)}</div></div>`;
+  const opened = new Set();                                   // jeux dont la fiche est dépliée (conservé entre deux rafraîchissements)
+  const details = g => `<div class="chips">${g.amb.map(a => `<span class="chip c-purple">${esc(a)}</span>`).join('')}${chips(g)}</div>${g.desc ? `<p class="desc">${esc(g.desc)}</p>` : ''}
+    <div class="gfoot"><span class="muted b">Ma note :</span><div>${stars(g)}</div></div>`;
+  const more = g => `<div class="more">${opened.has(g.i) ? details(g) : ''}</div>`;
+  const openAttrs = g => `class="${'@'}${opened.has(g.i) ? ' open' : ''}" data-open="${g.i}" tabindex="0" role="button" aria-expanded="${opened.has(g.i)}" aria-label="${esc(g.title)}"`;
+  const tile = g => `<article ${openAttrs(g).replace('@', 'tile')}><div class="tcover">${thumb(g)}<span class="ambbadge">${esc(g.amb.join(' • ') || 'Général')}</span>${wishBtn(g)}${mineTag(g)}</div>
+    <div class="tinfo"><b>${esc(g.title)}</b></div>${more(g)}</article>`;
+  const row = g => `<article ${openAttrs(g).replace('@', 'row')}><div class="rhead"><div class="rthumb">${thumb(g)}</div>
+    <div class="rinfo"><b>${esc(g.title)}</b><small>⏱ ${esc(g.duree)} · 👥 ${esc(g.players)}${g.niveau ? ' · ' + esc(g.niveau) : ''}</small></div>${mineTag(g)}${wishBtn(g, true)}</div>${more(g)}</article>`;
+  function toggleOpen(el) {                                   // déplie / replie la fiche sur place, sans recharger la liste
+    const i = +el.dataset.open, g = S.games[i], on = !opened.has(i);
+    if (on) opened.add(i); else opened.delete(i);
+    el.classList.toggle('open', on); el.setAttribute('aria-expanded', on);
+    el.querySelector('.more').innerHTML = on ? details(g) : '';
   }
-  function openDetail(i) { openIdx = i; renderDetail(); $('#gameDialog').showModal(); }
 
   function renderGames(list, el, view) {
     if (!list.length) { el.innerHTML = '<p class="empty">Aucun jeu ne correspond à vos critères.</p>'; return; }
@@ -159,6 +175,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
     fill('#fFormat', 'Format (Tous)', G.flatMap(g => g.formats));
   }
   function renderCatalogue() {
+    if (S.loadError) { $('#catalogue').innerHTML = S.loadError; return; }
     const q = keyOf($('#search').value), a = $('#fAmbiance').value, d = $('#fDuree').value, n = $('#fNiveau').value, m = $('#fMode').value, f = $('#fFormat').value;
     const list = S.games.filter(g => (!q || g.key.includes(q)) && (!a || g.amb.includes(a)) && (!d || g.duree === d) && (!n || g.niveau === n) && (!m || g.modes.includes(m)) && (!f || g.formats.includes(f)));
     $('#navCount').textContent = list.length;
@@ -211,7 +228,6 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
   }
   function refresh() {
     tip.hidden = true; tipFor = null;
-    if ($('#gameDialog').open) renderDetail();
     $('#wishCount').textContent = S.games.filter(wished).length;
     if (S.tab === 'wishlist') renderWishlist();
     if (S.tab === 'catalogue') renderCatalogue();
@@ -232,9 +248,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
     ['search', 'fAmbiance', 'fDuree', 'fNiveau', 'fMode', 'fFormat'].forEach(id => $('#' + id).addEventListener('input', renderCatalogue));
     $('#resetFilters').onclick = () => { $('#search').value = ''; $$('.filters select').forEach(s => s.value = ''); renderCatalogue(); };
     $('#descClose').onclick = () => $('#descDialog').close();
-    $('#gameClose').onclick = () => $('#gameDialog').close();
-    $('#gameDialog').addEventListener('click', e => { if (e.target === e.currentTarget) e.currentTarget.close(); });   // clic en dehors = fermer
-    document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.matches && e.target.matches('[data-open]')) openDetail(+e.target.dataset.open); });
+    document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.matches && e.target.matches('[data-open]')) toggleOpen(e.target); });
     $('#filterToggle').onclick = () => { const o = $('#filtersCard').classList.toggle('filters-open'); $('#filterToggle').setAttribute('aria-expanded', o); };
     matchMedia('(max-width:700px)').addEventListener('change', () => refresh());
     $('#pickDialog').addEventListener('cancel', e => e.preventDefault());   // choix obligatoire au démarrage
