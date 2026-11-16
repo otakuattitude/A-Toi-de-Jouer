@@ -27,12 +27,13 @@
 </div></header>
 <main>
   <section id="tab-catalogue" class="panel">
-    <div class="card">
+    <div class="card" id="filtersCard">
       <div class="searchrow">
         <div class="searchbox"><i class="fa-solid fa-search"></i><input id="search" type="search" placeholder="Rechercher un jeu (ex : Catane, Codenames…)" aria-label="Recherche"></div>
+        <button id="filterToggle" class="btn" aria-expanded="false" aria-controls="filterSelects"><i class="fa-solid fa-sliders"></i> Filtres <span id="filterBadge" class="fbadge" hidden></span></button>
         <button id="resetFilters" class="btn dark"><i class="fa-solid fa-rotate-right"></i> Réinitialiser</button>
       </div>
-      <div class="selects">
+      <div class="selects" id="filterSelects">
         <select id="fAmbiance" aria-label="Ambiance"></select><select id="fDuree" aria-label="Durée"></select><select id="fNiveau" aria-label="Niveau"></select>
         <select id="fMode" aria-label="Mode"></select><select id="fFormat" aria-label="Format"></select>
       </div>
@@ -92,6 +93,7 @@
 <dialog id="descDialog"><h2 id="descTitle"></h2><p id="descText" class="desc"></p>
   <div class="actions"><button class="btn primary" id="descClose">Fermer</button></div></dialog>
 <footer class="foot">Vignettes : <a href="https://boardgamegeek.com" target="_blank" rel="noopener">Powered by BoardGameGeek</a></footer>
+<dialog id="gameDialog" class="sheet"><div class="sheetin"><div id="gameDetail"></div><div class="actions"><button class="btn primary" id="gameClose">Fermer</button></div></div></dialog>
 <div id="toast" class="toast" role="status" hidden></div>
 <script src="app.js"></script>
 <script src="admin.js"></script>

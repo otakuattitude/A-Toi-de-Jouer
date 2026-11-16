@@ -87,6 +87,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
     const s = e.target.closest('.star'), d = e.target.closest('.desc-btn');
     if (s) rate(+s.dataset.i, +s.dataset.star);
     const h = e.target.closest('.wish'); if (h) toggleWish(+h.dataset.i);
+    const o = e.target.closest('[data-open]'); if (o && !e.target.closest('button, a, select, input')) openDetail(+o.dataset.open);
     if (d) { const g = S.games[+d.dataset.i]; $('#descTitle').textContent = g.title; $('#descText').textContent = g.desc; $('#descDialog').showModal(); }
   });
   /* ---------- Bulle de description au survol ---------- */
@@ -124,8 +125,25 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
   const recCard = g => `<article class="card rec" data-tip="${g.i}"><div><div class="gtitle"><div><h4>${esc(g.title)}</h4><span class="pill-amber">Coup de cœur potentiel</span></div>${descBtn(g)}</div>
     <p class="muted">Similaire en <b class="ic-purple">${esc(g.amb.join(' / '))}</b>${g.modes.length ? ` (${esc(g.modes.join(' / '))})` : ''}.</p></div>
     <div class="recfoot"><span class="muted">Durée : ${esc(g.duree)}</span><em>Recommandé pour toi</em></div></article>`;
+  /* ---------- Mobile : tuiles / lignes compactes + fiche détaillée au toucher ---------- */
+  const isMobile = () => matchMedia('(max-width:700px)').matches;
+  const thumb = g => /^https?:\/\//i.test(g.img) ? `<img src="${esc(g.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : '<span aria-hidden="true">🎲</span>';
+  const mineTag = g => mine(g) ? `<span class="mine">★ ${mine(g)}</span>` : '';
+  const tile = g => `<article class="tile" data-open="${g.i}" tabindex="0" role="button" aria-label="${esc(g.title)}"><div class="tcover">${thumb(g)}${wishBtn(g)}${mineTag(g)}</div>
+    <div class="tinfo"><b>${esc(g.title)}</b><small>⏱ ${esc(g.duree)} · 👥 ${esc(g.players)}</small></div></article>`;
+  const row = g => `<article class="row" data-open="${g.i}" tabindex="0" role="button" aria-label="${esc(g.title)}"><div class="rthumb">${thumb(g)}</div>
+    <div class="rinfo"><b>${esc(g.title)}</b><small>⏱ ${esc(g.duree)} · 👥 ${esc(g.players)}${g.niveau ? ' · ' + esc(g.niveau) : ''}</small></div>${mineTag(g)}${wishBtn(g, true)}</article>`;
+  let openIdx = -1;
+  function renderDetail() {
+    const g = S.games[openIdx]; if (!g) return;
+    $('#gameDetail').innerHTML = `${cover(g)}<h2>${esc(g.title)}</h2><div class="chips">${chips(g)}</div>${g.desc ? `<p class="desc">${esc(g.desc)}</p>` : ''}
+      <div class="gfoot"><span class="muted b">Ma note :</span><div>${stars(g)}</div></div>`;
+  }
+  function openDetail(i) { openIdx = i; renderDetail(); $('#gameDialog').showModal(); }
+
   function renderGames(list, el, view) {
     if (!list.length) { el.innerHTML = '<p class="empty">Aucun jeu ne correspond à vos critères.</p>'; return; }
+    if (isMobile()) { el.innerHTML = view === 'grid' ? `<div class="tiles">${list.map(tile).join('')}</div>` : `<div class="rows">${list.map(row).join('')}</div>`; return; }
     if (view === 'grid') { el.innerHTML = `<div class="grid">${list.map(card).join('')}</div>`; return; }
     el.innerHTML = '<div class="tablewrap"><table><thead><tr><th>Jeu</th><th>Ambiance(s)</th><th>Durée</th><th>Joueurs</th><th>Niveau</th><th>Mode(s)</th><th>Format(s)</th><th>Ma note</th><th>Envie</th></tr></thead><tbody>' +
       list.map(g => `<tr data-tip="${g.i}"><td><strong>${esc(g.title)}</strong> ${descBtn(g)}</td><td data-label="Ambiance" class="ic-purple b">${esc(g.amb.join(' / '))}</td><td data-label="Durée">${esc(g.duree)}</td><td data-label="Joueurs">${esc(g.players)}</td><td data-label="Niveau">${esc(g.niveau)}</td><td data-label="Mode">${esc(g.modes.join(' / '))}</td><td data-label="Format">${esc(g.formats.join(' / '))}</td><td data-label="Ma note">${stars(g)}</td><td data-label="Envie">${wishBtn(g, true)}</td></tr>`).join('') + '</tbody></table></div>';
@@ -144,6 +162,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
     const q = keyOf($('#search').value), a = $('#fAmbiance').value, d = $('#fDuree').value, n = $('#fNiveau').value, m = $('#fMode').value, f = $('#fFormat').value;
     const list = S.games.filter(g => (!q || g.key.includes(q)) && (!a || g.amb.includes(a)) && (!d || g.duree === d) && (!n || g.niveau === n) && (!m || g.modes.includes(m)) && (!f || g.formats.includes(f)));
     $('#navCount').textContent = list.length;
+    const nf = [a, d, n, m, f].filter(Boolean).length; $('#filterBadge').textContent = nf; $('#filterBadge').hidden = !nf;
     $$('.vbtn').forEach(b => b.classList.toggle('active', b.dataset.view === S.view));
     renderGames(list, $('#catalogue'), S.view);
   }
@@ -192,6 +211,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
   }
   function refresh() {
     tip.hidden = true; tipFor = null;
+    if ($('#gameDialog').open) renderDetail();
     $('#wishCount').textContent = S.games.filter(wished).length;
     if (S.tab === 'wishlist') renderWishlist();
     if (S.tab === 'catalogue') renderCatalogue();
@@ -212,6 +232,11 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
     ['search', 'fAmbiance', 'fDuree', 'fNiveau', 'fMode', 'fFormat'].forEach(id => $('#' + id).addEventListener('input', renderCatalogue));
     $('#resetFilters').onclick = () => { $('#search').value = ''; $$('.filters select').forEach(s => s.value = ''); renderCatalogue(); };
     $('#descClose').onclick = () => $('#descDialog').close();
+    $('#gameClose').onclick = () => $('#gameDialog').close();
+    $('#gameDialog').addEventListener('click', e => { if (e.target === e.currentTarget) e.currentTarget.close(); });   // clic en dehors = fermer
+    document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.matches && e.target.matches('[data-open]')) openDetail(+e.target.dataset.open); });
+    $('#filterToggle').onclick = () => { const o = $('#filtersCard').classList.toggle('filters-open'); $('#filterToggle').setAttribute('aria-expanded', o); };
+    matchMedia('(max-width:700px)').addEventListener('change', () => refresh());
     $('#pickDialog').addEventListener('cancel', e => e.preventDefault());   // choix obligatoire au démarrage
 
     $('#pickForm').onsubmit = e => { e.preventDefault(); $('#pickDialog').close(); selectProfile($('#pickSelect').value); };
