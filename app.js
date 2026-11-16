@@ -22,7 +22,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
   /* ---------- Chargement ---------- */
   function parseGame(raw) {
     const m = {}; Object.keys(raw).forEach(k => m[normHead(k)] = raw[k]);
-    const f = n => String(m[n] ?? '').trim(), title = f('JEU');
+    const f = n => String(m[n] ?? '').replace(/^[^\p{L}\p{N}]+/u, '').trim(), title = f('JEU');   // retire les emojis en début de cellule (ex. « ⚡ 15–30 min »)
     if (!title) return null;
     return { title, key: keyOf(title), amb: [f('AMBIANCE'), f('AMBIANCE2')].flatMap(x => x.split(/\s*\/\s*/)).filter(Boolean), duree: f('DUREE') || '—', players: f('JOUEURS') || '?',
       niveau: f('NIVEAU'), modes: [f('MODE'), f('MODE2')].flatMap(x => x.split(/\s*\/\s*/)).filter(Boolean), formats: [f('FORMAT'), f('FORMAT2')].flatMap(x => x.split(/\s*\/\s*/)).filter(Boolean),
@@ -63,11 +63,13 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
   const mine = g => (S.ratings[S.user] || {})[g.key] || 0;
   function avg(g) {
     const v = Object.values(S.ratings).map(r => r[g.key]).filter(Boolean);
-    return v.length ? `${(v.reduce((a, b) => a + b, 0) / v.length).toFixed(1)} (${v.length})` : 'pas de note';
+    return v.length ? { has: true, txt: `${(v.reduce((a, b) => a + b, 0) / v.length).toFixed(1)} (${v.length})` } : { has: false, txt: 'pas de note' };
   }
-  const stars = g => '<span class="stars" role="group" aria-label="Ma note">' + [1, 2, 3, 4, 5].map(n =>
-    `<button class="star${n <= mine(g) ? ' on' : ''}" data-i="${g.i}" data-star="${n}" aria-label="${n} étoile${n > 1 ? 's' : ''}"><i class="fa-solid fa-star"></i></button>`).join('') + `</span><span class="avg">${avg(g)}</span>`;
+  const stars = g => `<span class="stars${S.user ? '' : ' locked'}" role="group" aria-label="${S.user ? 'Ma note' : 'Notation réservée aux membres : choisis un profil'}">` + [1, 2, 3, 4, 5].map(n =>
+    `<button class="star${n <= mine(g) ? ' on' : ''}" data-i="${g.i}" data-star="${n}" aria-label="${n} étoile${n > 1 ? 's' : ''}"><i class="fa-solid fa-star"></i></button>`).join('') + `</span>${(a => `<span class="avg${a.has ? ' has' : ''}">${a.has ? '<i class="fa-solid fa-star"></i> ' : ''}${a.txt}</span>`)(avg(g))}`;
+  const needLogin = () => { toast('Choisis ton profil pour noter ou garder des jeux.'); $('#pickDialog').showModal(); };
   async function rate(i, star) {
+    if (!S.user) return needLogin();
     const g = S.games[i], r = S.ratings[S.user] = S.ratings[S.user] || {};
     const prev = r[g.key] || 0, next = prev === star ? 0 : star;
     if (next) r[g.key] = next; else delete r[g.key];
@@ -83,6 +85,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
   /* ---------- Liste de souhaits ---------- */
   const wished = g => !!(S.wishes[S.user] || {})[g.key];
   async function toggleWish(i) {
+    if (!S.user) return needLogin();
     const g = S.games[i], w = S.wishes[S.user] = S.wishes[S.user] || {}, was = !!w[g.key];
     if (was) delete w[g.key]; else w[g.key] = true;
     refresh();
@@ -99,6 +102,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
     if (s) rate(+s.dataset.i, +s.dataset.star);
     const h = e.target.closest('.wish'); if (h) toggleWish(+h.dataset.i);
     if (e.target.closest('#retryLoad')) location.reload();
+    if (e.target.closest('#loginPrompt')) $('#pickDialog').showModal();
     const o = e.target.closest('[data-open]'); if (o && !e.target.closest('button, a, select, input, .more')) toggleOpen(o);
     if (d) { const g = S.games[+d.dataset.i]; $('#descTitle').textContent = g.title; $('#descText').textContent = g.desc; $('#descDialog').showModal(); }
   });
@@ -122,35 +126,38 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
   });
   document.addEventListener('mouseleave', () => { tip.hidden = true; tipFor = null; });
   document.addEventListener('error', e => {   // jaquette introuvable -> pictogramme
-    if (e.target.tagName === 'IMG') e.target.replaceWith(Object.assign(document.createElement('span'), { textContent: '🎲' }));
+    if (e.target.tagName === 'IMG') e.target.replaceWith(Object.assign(document.createElement('i'), { className: 'fa-solid fa-dice' }));
   }, true);
 
   /* ---------- Rendu ---------- */
-  const wishBtn = (g, inline) => `<button class="wish${wished(g) ? ' on' : ''}${inline ? ' inline' : ''}" data-i="${g.i}" aria-pressed="${wished(g)}"
+  const wishBtn = (g, inline) => `<button class="wish${wished(g) ? ' on' : ''}${S.user ? '' : ' locked'}${inline ? ' inline' : ''}" data-i="${g.i}" aria-pressed="${wished(g)}"
     aria-label="${wished(g) ? 'Retirer de' : 'Ajouter à'} ma liste de souhaits : ${esc(g.title)}" title="${wished(g) ? 'Retirer de' : 'Ajouter à'} ma liste de souhaits"><i class="fa-${wished(g) ? 'solid' : 'regular'} fa-heart"></i></button>`;
-  const cover = g => `<div class="cover">${/^https?:\/\//i.test(g.img) ? `<img src="${esc(g.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : '<span aria-hidden="true">🎲</span>'}<span class="ambbadge">${esc(g.amb.join(' • ') || 'Général')}</span>${wishBtn(g)}</div>`;
+  const cover = g => `<div class="cover">${/^https?:\/\//i.test(g.img) ? `<img src="${esc(g.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : '<i class="fa-solid fa-dice" aria-hidden="true"></i>'}<span class="ambbadge">${esc(g.amb.join(' • ') || 'Général')}</span></div>`;
   const descBtn = g => g.desc ? `<button class="fiche desc-btn" data-i="${g.i}" title="Voir la description"><i class="fa-solid fa-comment-dots"></i> Fiche</button>` : '';
-  const chips = g => [['fa-clock', 'c-amber', g.duree], ['fa-users', 'c-cyan', g.players + ' j.'], ['fa-signal', 'c-emerald', g.niveau], ['fa-puzzle-piece', 'c-rose', g.modes.join(', ')], ['fa-box', 'c-purple', g.formats.join(', ')]]
-    .filter(c => c[2]).map(c => `<span class="chip ${c[1]}"><i class="fa-solid ${c[0]}"></i>${esc(c[2])}</span>`).join('');
-  const card = g => `<article class="game" data-tip="${g.i}"><div>${cover(g)}<div class="gbody"><div class="gtitle"><h3>${esc(g.title)}</h3>${descBtn(g)}</div><div class="chips">${chips(g)}</div></div></div>
+  const easy = n => /d[eé]butant|famil|facile|initi|enfant/i.test(n || '');
+  const chipList = rows => rows.filter(c => c[2]).map(c => `<span class="chip${c[1] ? ' ' + c[1] : ''}"><i class="fa-solid ${c[0]}"></i>${esc(c[2])}</span>`).join('');
+  const chipsLite = g => chipList([['fa-signal', easy(g.niveau) ? 'c-ok' : '', g.niveau], ['fa-puzzle-piece', '', g.modes.join(', ')], ['fa-box', '', g.formats.join(', ')]]);
+  const chips = g => chipList([['fa-clock', '', g.duree], ['fa-users', '', g.players + ' j.']]) + chipsLite(g);
+  const card = g => `<article class="game" data-tip="${g.i}"><div>${cover(g)}<div class="gbody"><div class="gtitle"><h3>${esc(g.title)}</h3><div class="gact">${descBtn(g)}${wishBtn(g, true)}</div></div><div class="chips">${chips(g)}</div></div></div>
     <div class="gfoot"><span class="muted b">Ma note :</span><div>${stars(g)}</div></div></article>`;
   const recCard = p => { const g = p.game; return `<article class="card rec" data-tip="${g.i}"><div><div class="gtitle"><div><h4>${esc(g.title)}</h4>
     <span class="pill-amber">${p.kind === 'popular' ? 'Apprécié dans l\'asso' : 'Coup de cœur potentiel'}</span></div>${descBtn(g)}</div>
-    <p class="muted">${p.kind === 'popular' ? `Noté ${p.avg.toFixed(1)} ★ par ${p.n} membre${p.n > 1 ? 's' : ''}.` : (p.because ? `Parce que tu as aimé <b class="ic-purple">${esc(p.because)}</b>` : 'Proche de tes goûts') + (g.amb.length ? ` — ${esc(g.amb.join(' / '))}` : '') + '.'}</p></div>
+    <p class="muted">${p.kind === 'popular' ? `Noté ${p.avg.toFixed(1)} ★ par ${p.n} membre${p.n > 1 ? 's' : ''}.` : (p.because ? `Parce que tu as aimé <b>${esc(p.because)}</b>` : 'Proche de tes goûts') + (g.amb.length ? ` — ${esc(g.amb.join(' / '))}` : '') + '.'}</p></div>
     <div class="recfoot"><span class="muted">Durée : ${esc(g.duree)}</span><em>${p.kind === 'popular' ? 'Populaire' : 'Recommandé pour toi'}</em></div></article>`; };
   /* ---------- Mobile : tuiles / lignes compactes + fiche détaillée au toucher ---------- */
   const isMobile = () => matchMedia('(max-width:700px)').matches;
-  const thumb = g => /^https?:\/\//i.test(g.img) ? `<img src="${esc(g.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : '<span aria-hidden="true">🎲</span>';
+  const thumb = g => /^https?:\/\//i.test(g.img) ? `<img src="${esc(g.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : '<i class="fa-solid fa-dice" aria-hidden="true"></i>';
   const mineTag = g => mine(g) ? `<span class="mine">★ ${mine(g)}</span>` : '';
   const opened = new Set();                                   // jeux dont la fiche est dépliée (conservé entre deux rafraîchissements)
-  const details = g => `<div class="chips">${g.amb.map(a => `<span class="chip c-purple">${esc(a)}</span>`).join('')}${chips(g)}</div>${g.desc ? `<p class="desc">${esc(g.desc)}</p>` : ''}
+  const details = g => `<div class="infobox"><div class="infoline"><span><i class="fa-solid fa-clock"></i> ${esc(g.duree)}</span><span><i class="fa-solid fa-users"></i> ${esc(g.players)} j.</span></div>${g.desc ? `<p class="desc">${esc(g.desc)}</p>` : ''}</div>
+    <div class="chips">${g.amb.map(a => `<span class="chip">${esc(a)}</span>`).join('')}${chipsLite(g)}</div>
     <div class="gfoot"><span class="muted b">Ma note :</span><div>${stars(g)}</div></div>`;
   const more = g => `<div class="more">${opened.has(g.i) ? details(g) : ''}</div>`;
   const openAttrs = g => `class="${'@'}${opened.has(g.i) ? ' open' : ''}" data-open="${g.i}" tabindex="0" role="button" aria-expanded="${opened.has(g.i)}" aria-label="${esc(g.title)}"`;
   const tile = g => `<article ${openAttrs(g).replace('@', 'tile')}><div class="tcover">${thumb(g)}<span class="ambbadge">${esc(g.amb.join(' • ') || 'Général')}</span>${wishBtn(g)}${mineTag(g)}</div>
     <div class="tinfo"><b>${esc(g.title)}</b></div>${more(g)}</article>`;
   const row = g => `<article ${openAttrs(g).replace('@', 'row')}><div class="rhead"><div class="rthumb">${thumb(g)}</div>
-    <div class="rinfo"><b>${esc(g.title)}</b><small>⏱ ${esc(g.duree)} · 👥 ${esc(g.players)}${g.niveau ? ' · ' + esc(g.niveau) : ''}</small></div>${mineTag(g)}${wishBtn(g, true)}</div>${more(g)}</article>`;
+    <div class="rinfo"><b>${esc(g.title)}</b><small><i class="fa-regular fa-clock"></i> ${esc(g.duree)} · <i class="fa-solid fa-users"></i> ${esc(g.players)}${g.niveau ? ' · ' + esc(g.niveau) : ''}</small></div>${mineTag(g)}${wishBtn(g, true)}</div>${more(g)}</article>`;
   function toggleOpen(el) {                                   // déplie / replie la fiche sur place, sans recharger la liste
     const i = +el.dataset.open, g = S.games[i], on = !opened.has(i);
     if (on) opened.add(i); else opened.delete(i);
@@ -163,7 +170,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
     if (isMobile()) { el.innerHTML = view === 'grid' ? `<div class="tiles">${list.map(tile).join('')}</div>` : `<div class="rows">${list.map(row).join('')}</div>`; return; }
     if (view === 'grid') { el.innerHTML = `<div class="grid">${list.map(card).join('')}</div>`; return; }
     el.innerHTML = '<div class="tablewrap"><table><thead><tr><th>Jeu</th><th>Ambiance(s)</th><th>Durée</th><th>Joueurs</th><th>Niveau</th><th>Mode(s)</th><th>Format(s)</th><th>Ma note</th><th>Envie</th></tr></thead><tbody>' +
-      list.map(g => `<tr data-tip="${g.i}"><td><strong>${esc(g.title)}</strong> ${descBtn(g)}</td><td data-label="Ambiance" class="ic-purple b">${esc(g.amb.join(' / '))}</td><td data-label="Durée">${esc(g.duree)}</td><td data-label="Joueurs">${esc(g.players)}</td><td data-label="Niveau">${esc(g.niveau)}</td><td data-label="Mode">${esc(g.modes.join(' / '))}</td><td data-label="Format">${esc(g.formats.join(' / '))}</td><td data-label="Ma note">${stars(g)}</td><td data-label="Envie">${wishBtn(g, true)}</td></tr>`).join('') + '</tbody></table></div>';
+      list.map(g => `<tr data-tip="${g.i}"><td><strong>${esc(g.title)}</strong> ${descBtn(g)}</td><td data-label="Ambiance" class="b">${esc(g.amb.join(' / '))}</td><td data-label="Durée">${esc(g.duree)}</td><td data-label="Joueurs">${esc(g.players)}</td><td data-label="Niveau">${esc(g.niveau)}</td><td data-label="Mode">${esc(g.modes.join(' / '))}</td><td data-label="Format">${esc(g.formats.join(' / '))}</td><td data-label="Ma note">${stars(g)}</td><td data-label="Envie">${wishBtn(g, true)}</td></tr>`).join('') + '</tbody></table></div>';
   }
   function fill(sel, label, values) {
     const v = [...new Set(values.filter(Boolean))].sort((a, b) => a.localeCompare(b, 'fr', { sensitivity: 'base' }));
@@ -184,14 +191,17 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
     $$('.vbtn').forEach(b => b.classList.toggle('active', b.dataset.view === S.view));
     renderGames(list, $('#catalogue'), S.view);
   }
+  const loginCard = (t, m) => `<div class="card empty-card"><i class="fa-solid fa-user-lock ic-amber big"></i><h3>${t}</h3><p class="muted">${m}</p><button class="btn primary" id="loginPrompt">Choisir mon profil</button></div>`;
   function renderWishlist() {
+    if (!S.user) { $('#wishUser').textContent = 'invité'; $('#wishlist').innerHTML = loginCard('Ta liste de souhaits', 'Choisis un profil pour garder les jeux qui te tentent.'); return; }
     const w = S.wishes[S.user] || {}, list = S.games.filter(g => w[g.key]);
     $('#wishUser').textContent = S.user;
     if (list.length) renderGames(list, $('#wishlist'), S.view);
     else $('#wishlist').innerHTML = '<div class="card empty-card"><i class="fa-solid fa-heart ic-rose big"></i><h3>Ta liste est vide</h3><p class="muted">Clique sur le cœur d\'un jeu du catalogue pour le retrouver ici.</p></div>';
   }
   function renderForYou() {
-    $('#recUser').textContent = S.user;
+    $('#recUser').textContent = S.user || 'invité';
+    if (!S.user) { $('#foryouIntro').textContent = ''; $('#foryou').innerHTML = loginCard('Recommandations personnalisées', 'Choisis un profil et note quelques jeux : les suggestions seront calculées pour toi.'); return; }
     if (!window.Reco) { $('#foryou').innerHTML = '<div class="card empty-card"><h3>Module de recommandations absent</h3><p class="muted">Le fichier reco.js n\'a pas été mis en ligne.</p></div>'; return; }
     const res = Reco.recommend(S.games, S.ratings, S.user);
     $('#foryouIntro').textContent = res.liked ? `Sélection basée sur tes ${res.liked} jeu${res.liked > 1 ? 'x' : ''} noté${res.liked > 1 ? 's' : ''} 4 ou 5 étoiles.` : 'Sélection sur-mesure basée sur tes jeux notés 4 ou 5 étoiles.';
@@ -203,15 +213,15 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
   /* ---------- Profils, rôles, onglets ---------- */
   function renderProfiles() {
     const opts = S.members.map(m => `<option value="${esc(m.name)}">${esc(m.name)}${m.admin ? ' (admin)' : ''}</option>`).join('');
-    $('#profileSelect').innerHTML = opts + '<option value="__new__">+ Créer mon profil…</option>';
-    $('#profileSelect').value = S.user; $('#pickSelect').innerHTML = opts;
+    $('#profileSelect').innerHTML = '<option value="__guest__">Invité (lecture seule)</option>' + opts + '<option value="__new__">+ Créer mon profil…</option>';
+    $('#profileSelect').value = S.user || '__guest__'; $('#pickSelect').innerHTML = opts;
   }
   function applyRole() {
     $('#adminBadge').hidden = !S.admin;
     $$('[data-admin]').forEach(t => t.hidden = !S.admin);
     if (!S.admin && ['stats', 'admin'].includes(S.tab)) showTab('catalogue');
   }
-  function enter(name, admin) { S.user = name; S.admin = admin; renderProfiles(); applyRole(); refresh(); }
+  function enter(name, admin) { S.chosen = true; S.user = name; S.admin = admin; renderProfiles(); applyRole(); refresh(); }
   let pending = '';
   function selectProfile(name) {
     const m = S.members.find(x => x.name === name); if (!m) return;
@@ -234,31 +244,33 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
     if (S.tab === 'stats' && S.admin) Admin.renderStats();
   }
   function setTheme(t) {
-    if (!['dark', 'light', 'cvd'].includes(t)) t = 'dark';
+    if (!['dark', 'light', 'cvd'].includes(t)) t = 'light';
     document.documentElement.setAttribute('data-theme', t); $('#themeSelect').value = t; pref.set('ludo_theme', t);
   }
   const askWho = () => { $('#pickDialog').showModal(); };
 
   async function init() {
-    setTheme(pref.get('ludo_theme', 'dark'));
+    setTheme(pref.get('ludo_theme', 'light'));
     $('#themeSelect').onchange = e => setTheme(e.target.value);
     $$('.tab').forEach(b => b.onclick = () => showTab(b.dataset.tab));
     $$('.vbtn').forEach(b => b.onclick = () => { S.view = b.dataset.view; pref.set('ludo_view', S.view); renderCatalogue(); });
     ['search', 'fAmbiance', 'fDuree', 'fNiveau', 'fMode', 'fFormat'].forEach(id => $('#' + id).addEventListener('input', renderCatalogue));
-    $('#resetFilters').onclick = () => { $('#search').value = ''; $$('.filters select').forEach(s => s.value = ''); renderCatalogue(); };
+    $('#resetFilters').onclick = () => { $('#search').value = ''; $$('#filterSelects select').forEach(s => s.value = ''); renderCatalogue(); };
     $('#descClose').onclick = () => $('#descDialog').close();
     document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.matches && e.target.matches('[data-open]')) toggleOpen(e.target); });
     $('#filterToggle').onclick = () => { const o = $('#filtersCard').classList.toggle('filters-open'); $('#filterToggle').setAttribute('aria-expanded', o); };
     matchMedia('(max-width:700px)').addEventListener('change', () => refresh());
-    $('#pickDialog').addEventListener('cancel', e => e.preventDefault());   // choix obligatoire au démarrage
+    $('#pickDialog').addEventListener('cancel', e => { e.preventDefault(); $('#pickDialog').close(); if (!S.chosen) enter('', false); });   // Échap = continuer en invité
+    $('#pickGuest').onclick = () => { $('#pickDialog').close(); enter('', false); };
 
     $('#pickForm').onsubmit = e => { e.preventDefault(); $('#pickDialog').close(); selectProfile($('#pickSelect').value); };
     $('#pickNew').onclick = () => { $('#pickDialog').close(); $('#newName').value = ''; $('#newError').hidden = true; $('#newDialog').showModal(); };
     $('#profileSelect').onchange = e => {
-      if (e.target.value === '__new__') { $('#newName').value = ''; $('#newError').hidden = true; $('#newDialog').showModal(); }
+      if (e.target.value === '__guest__') enter('', false);
+      else if (e.target.value === '__new__') { $('#newName').value = ''; $('#newError').hidden = true; $('#newDialog').showModal(); }
       else selectProfile(e.target.value);
     };
-    const backFromDialog = () => { if (!S.user) askWho(); else renderProfiles(); };
+    const backFromDialog = () => { if (!S.chosen) askWho(); else renderProfiles(); };
     $('#pwCancel').onclick = () => { $('#pwDialog').close(); backFromDialog(); };
     $('#pwDialog').addEventListener('cancel', () => setTimeout(backFromDialog));
     $('#pwForm').onsubmit = async e => {

@@ -43,9 +43,9 @@
         <div class="inbox"><span class="tiny">Total des votes enregistrés</span><div class="big ic-emerald">${total} vote(s) au total</div></div></div>
       <h3 class="sub ic-amber"><i class="fa-solid fa-trophy"></i> Le Top 5 des jeux préférés de l'Asso</h3>
       <div class="toplist">${top.length ? top.map((x, i) => `<div class="inbox toprow"><div class="rowl"><span class="rank r${i}">#${i + 1}</span><b>${esc(x.t)}</b></div>
-        <div class="rowr"><span class="muted">${x.n} vote(s)</span><span class="pill-amber">⭐ ${x.m.toFixed(1)} / 5</span></div></div>`).join('') : '<div class="inbox muted">Aucun jeu évalué pour le moment.</div>'}</div>
+        <div class="rowr"><span class="muted">${x.n} vote(s)</span><span class="pill-amber"><i class="fa-solid fa-star"></i> ${x.m.toFixed(1)} / 5</span></div></div>`).join('') : '<div class="inbox muted">Aucun jeu évalué pour le moment.</div>'}</div>
       <h3 class="sub ic-rose"><i class="fa-solid fa-heart"></i> Les jeux les plus souhaités</h3>
-      <div class="toplist">${topW.length ? topW.map(x => `<div class="inbox toprow"><b>${esc(x.t)}</b><span class="pill-amber">❤ ${x.n} souhait(s)</span></div>`).join('') : '<div class="inbox muted">Aucun souhait pour le moment.</div>'}</div>
+      <div class="toplist">${topW.length ? topW.map(x => `<div class="inbox toprow"><b>${esc(x.t)}</b><span class="pill-amber"><i class="fa-solid fa-heart"></i> ${x.n} souhait(s)</span></div>`).join('') : '<div class="inbox muted">Aucun souhait pour le moment.</div>'}</div>
       <h3 class="sub ic-cyan"><i class="fa-solid fa-users"></i> Implication des membres (votes par joueur)</h3>
       <div class="members">${Object.entries(byUser).map(([u, n]) => `<div class="inbox"><span class="b"><i class="fa-solid fa-user ic-amber"></i> ${esc(u)}</span>
         <div class="mrow"><span class="muted">Jeux notés :</span><b class="ic-emerald">${n}</b></div></div>`).join('')}</div></div>`;

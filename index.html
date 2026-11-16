@@ -1,37 +1,40 @@
 <!DOCTYPE html>
-<html lang="fr" data-theme="dark">
+<html lang="fr" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>À Toi de Jouer ! – Ludothèque</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="style.css?v=6">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Titan+One&display=swap">
+<link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
 <header class="app-header"><div class="hwrap">
   <div class="brand"><div class="logo"><i class="fa-solid fa-dice"></i></div>
-    <div><h1>À TOI DE JOUER !</h1><p class="muted">Ludothèque associative</p></div></div>
+    <div><h1>À TOI DE JOUER !</h1><p class="sub-brand">L'ASSOCIATION DU JEU RAISONNABLE</p></div></div>
   <nav class="navpill" aria-label="Sections">
     <button class="tab active" data-tab="catalogue"><i class="fa-solid fa-chess-board"></i><span class="lbl">Catalogue <span class="cnt"><span id="navCount">0</span></span></span></button>
-    <button class="tab" data-tab="foryou"><i class="fa-solid fa-wand-magic-sparkles ic-amber"></i><span class="lbl">Pour moi</span></button>
-    <button class="tab" data-tab="wishlist"><i class="fa-solid fa-heart ic-rose"></i><span class="lbl">Souhaits <span class="cnt"><span id="wishCount">0</span></span></span></button>
-    <button class="tab" data-tab="stats" data-admin hidden><i class="fa-solid fa-chart-pie ic-emerald"></i><span class="lbl">Statistiques</span></button>
-    <button class="tab" data-tab="admin" data-admin hidden><i class="fa-solid fa-shield-halved ic-rose"></i><span class="lbl">Admin</span></button>
+    <button class="tab" data-tab="foryou"><i class="fa-solid fa-wand-magic-sparkles"></i><span class="lbl">Pour moi</span></button>
+    <button class="tab" data-tab="wishlist"><i class="fa-solid fa-heart"></i><span class="lbl">Souhaits <span class="cnt"><span id="wishCount">0</span></span></span></button>
+    <button class="tab" data-tab="stats" data-admin hidden><i class="fa-solid fa-chart-pie"></i><span class="lbl">Statistiques</span></button>
+    <button class="tab" data-tab="admin" data-admin hidden><i class="fa-solid fa-shield-halved"></i><span class="lbl">Admin</span></button>
   </nav>
   <div class="hright">
-    <div class="profilebox"><i class="fa-solid fa-user-circle ic-amber big"></i>
+    <div class="profilebox"><span class="avatar" aria-hidden="true"><i class="fa-solid fa-user"></i></span>
       <div><span class="tiny">Profil actif</span><select id="profileSelect" aria-label="Profil actif"></select></div>
       <span id="adminBadge" class="badge" hidden>ADMIN</span></div>
-    <select id="themeSelect" aria-label="Thème"><option value="dark">🌙 Sombre</option><option value="light">☀️ Clair</option><option value="cvd">👁️ Daltonien</option></select>
+    <select id="themeSelect" aria-label="Thème"><option value="light">Clair</option><option value="dark">Sombre</option><option value="cvd">Daltonien</option></select>
   </div>
 </div></header>
+<div class="band" aria-hidden="true"></div>
 <main>
   <section id="tab-catalogue" class="panel">
     <div class="card" id="filtersCard">
       <div class="searchrow">
         <div class="searchbox"><i class="fa-solid fa-search"></i><input id="search" type="search" placeholder="Rechercher un jeu (ex : Catane, Codenames…)" aria-label="Recherche"></div>
         <button id="filterToggle" class="btn" aria-expanded="false" aria-controls="filterSelects"><i class="fa-solid fa-sliders"></i> Filtres <span id="filterBadge" class="fbadge" hidden></span></button>
-        <button id="resetFilters" class="btn dark"><i class="fa-solid fa-rotate-right"></i> Réinitialiser</button>
+        <button id="resetFilters" class="btn blue"><i class="fa-solid fa-rotate-right"></i> Réinitialiser</button>
       </div>
       <div class="selects" id="filterSelects">
         <select id="fAmbiance" aria-label="Ambiance"></select><select id="fDuree" aria-label="Durée"></select><select id="fNiveau" aria-label="Niveau"></select>
@@ -39,7 +42,7 @@
       </div>
     </div>
     <div class="card viewbar">
-      <span class="vtitle"><i class="fa-solid fa-gamepad ic-amber"></i> Affichage du catalogue</span>
+      <span class="vtitle">Affichage du catalogue</span>
       <div class="seg" role="group" aria-label="Type d'affichage">
         <button class="vbtn" data-view="grid"><i class="fa-solid fa-border-all"></i> Grille (Tuiles)</button>
         <button class="vbtn" data-view="list"><i class="fa-solid fa-list"></i> Liste (Tableau)</button>
@@ -74,8 +77,9 @@
 </main>
 
 <dialog id="pickDialog"><form method="dialog" id="pickForm">
-  <h2><i class="fa-solid fa-user-check"></i> Qui es-tu ?</h2><p class="muted">Sélectionne ton profil pour noter les jeux.</p>
+  <h2><i class="fa-solid fa-user-check"></i> Qui es-tu ?</h2><p class="muted">Choisis ton profil pour noter les jeux, ou consulte simplement le catalogue.</p>
   <select id="pickSelect" aria-label="Profil"></select>
+  <button type="button" class="btn guestbtn" id="pickGuest"><i class="fa-solid fa-eye"></i> Continuer sans profil (lecture seule)</button>
   <div class="actions"><button type="button" class="btn" id="pickNew"><i class="fa-solid fa-user-plus"></i> Créer mon profil</button><button class="btn primary">C'est parti !</button></div>
 </form></dialog>
 <dialog id="pwDialog"><form method="dialog" id="pwForm">
@@ -94,8 +98,8 @@
   <div class="actions"><button class="btn primary" id="descClose">Fermer</button></div></dialog>
 <footer class="foot">Vignettes : <a href="https://boardgamegeek.com" target="_blank" rel="noopener">Powered by BoardGameGeek</a></footer>
 <div id="toast" class="toast" role="status" hidden></div>
-<script src="reco.js?v=6"></script>
-<script src="app.js?v=6"></script>
-<script src="admin.js?v=6"></script>
+<script src="reco.js?v=8"></script>
+<script src="app.js?v=8"></script>
+<script src="admin.js?v=8"></script>
 </body>
 </html>
