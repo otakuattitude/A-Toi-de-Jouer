@@ -12,7 +12,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
   const apiGet = async s => (await fetch(`${API_URL}?sheet=${encodeURIComponent(s)}`)).json();
   const apiPost = async b => (await fetch(API_URL, { method: 'POST', body: JSON.stringify(b) })).json();
 
-  const S = { games: [], members: [], ratings: {}, wishes: {}, user: '', admin: false, view: pref.get('ludo_view', 'grid'), tab: 'catalogue' };
+  const S = { games: [], members: [], ratings: {}, wishes: {}, user: '', admin: false, view: pref.get('ludo_view', matchMedia('(max-width:700px)').matches ? 'list' : 'grid'), tab: 'catalogue' };
   let toastTimer;
   const toast = m => { const t = $('#toast'); t.textContent = m; t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => t.hidden = true, 3500); };
 
@@ -94,6 +94,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
   tip.setAttribute('role', 'tooltip'); document.body.appendChild(tip);
   let tipFor = null;
   document.addEventListener('mouseover', e => {
+    if (!matchMedia('(hover: hover)').matches) return;   // pas de bulle au toucher : le bouton « Fiche » suffit
     const el = e.target.closest('[data-tip]'), g = el && S.games[+el.dataset.tip];
     if (!g || !g.desc) { tip.hidden = true; tipFor = null; return; }
     if (tipFor !== el) { tipFor = el; tip.innerHTML = `<b>${esc(g.title)}</b>${esc(g.desc)}`; tip.hidden = false; }
@@ -114,7 +115,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
   /* ---------- Rendu ---------- */
   const wishBtn = (g, inline) => `<button class="wish${wished(g) ? ' on' : ''}${inline ? ' inline' : ''}" data-i="${g.i}" aria-pressed="${wished(g)}"
     aria-label="${wished(g) ? 'Retirer de' : 'Ajouter à'} ma liste de souhaits : ${esc(g.title)}" title="${wished(g) ? 'Retirer de' : 'Ajouter à'} ma liste de souhaits"><i class="fa-${wished(g) ? 'solid' : 'regular'} fa-heart"></i></button>`;
-  const cover = g => `<div class="cover">${/^https?:\/\//i.test(g.img) ? `<img src="${esc(g.img)}" alt="" loading="lazy">` : '<span aria-hidden="true">🎲</span>'}<span class="ambbadge">${esc(g.amb.join(' • ') || 'Général')}</span>${wishBtn(g)}</div>`;
+  const cover = g => `<div class="cover">${/^https?:\/\//i.test(g.img) ? `<img src="${esc(g.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : '<span aria-hidden="true">🎲</span>'}<span class="ambbadge">${esc(g.amb.join(' • ') || 'Général')}</span>${wishBtn(g)}</div>`;
   const descBtn = g => g.desc ? `<button class="fiche desc-btn" data-i="${g.i}" title="Voir la description"><i class="fa-solid fa-comment-dots"></i> Fiche</button>` : '';
   const chips = g => [['fa-clock', 'c-amber', g.duree], ['fa-users', 'c-cyan', g.players + ' j.'], ['fa-signal', 'c-emerald', g.niveau], ['fa-puzzle-piece', 'c-rose', g.modes.join(', ')], ['fa-box', 'c-purple', g.formats.join(', ')]]
     .filter(c => c[2]).map(c => `<span class="chip ${c[1]}"><i class="fa-solid ${c[0]}"></i>${esc(c[2])}</span>`).join('');
@@ -127,8 +128,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
     if (!list.length) { el.innerHTML = '<p class="empty">Aucun jeu ne correspond à vos critères.</p>'; return; }
     if (view === 'grid') { el.innerHTML = `<div class="grid">${list.map(card).join('')}</div>`; return; }
     el.innerHTML = '<div class="tablewrap"><table><thead><tr><th>Jeu</th><th>Ambiance(s)</th><th>Durée</th><th>Joueurs</th><th>Niveau</th><th>Mode(s)</th><th>Format(s)</th><th>Ma note</th><th>Envie</th></tr></thead><tbody>' +
-      list.map(g => `<tr data-tip="${g.i}"><td><strong>${esc(g.title)}</strong> ${descBtn(g)}</td><td class="ic-purple b">${esc(g.amb.join(' / '))}</td><td>${esc(g.duree)}</td><td>${esc(g.players)}</td>
-      <td>${esc(g.niveau)}</td><td>${esc(g.modes.join(' / '))}</td><td>${esc(g.formats.join(' / '))}</td><td>${stars(g)}</td><td>${wishBtn(g, true)}</td></tr>`).join('') + '</tbody></table></div>';
+      list.map(g => `<tr data-tip="${g.i}"><td><strong>${esc(g.title)}</strong> ${descBtn(g)}</td><td data-label="Ambiance" class="ic-purple b">${esc(g.amb.join(' / '))}</td><td data-label="Durée">${esc(g.duree)}</td><td data-label="Joueurs">${esc(g.players)}</td><td data-label="Niveau">${esc(g.niveau)}</td><td data-label="Mode">${esc(g.modes.join(' / '))}</td><td data-label="Format">${esc(g.formats.join(' / '))}</td><td data-label="Ma note">${stars(g)}</td><td data-label="Envie">${wishBtn(g, true)}</td></tr>`).join('') + '</tbody></table></div>';
   }
   function fill(sel, label, values) {
     const v = [...new Set(values.filter(Boolean))].sort((a, b) => a.localeCompare(b, 'fr', { sensitivity: 'base' }));

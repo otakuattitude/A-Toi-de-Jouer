@@ -150,3 +150,44 @@ th{background:var(--s-purple)}tbody tr:hover td{background:var(--s-amber)}
 
 /* Icône du profil : même dégradé que le logo et l'onglet actif */
 .profilebox .big{color:var(--accent);background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+
+.foot{text-align:center;color:var(--muted);font-size:.8rem;margin-top:2rem}.foot a{color:var(--accent-text);font-weight:700}
+
+/* ===== Mobile ===== */
+button{touch-action:manipulation}
+@media (max-width:700px){
+  body{padding-bottom:5.5rem}
+  main{padding:1rem .75rem}
+  input,select,textarea{font-size:16px}               /* évite le zoom automatique d'iOS dans les champs */
+  /* En-tête compact, non collant */
+  .app-header{position:static}
+  .hwrap{padding:.6rem .75rem;gap:.5rem}
+  .brand p{display:none}h1{font-size:1.05rem}
+  .logo{width:2.4rem;height:2.4rem;font-size:1.15rem}
+  .hright{width:100%;flex-wrap:nowrap;justify-content:space-between}
+  .profilebox{flex:1;min-width:0}.profilebox select{max-width:100%}
+  #themeSelect{flex:0 0 auto}
+  /* Navigation en barre fixe en bas de l'écran (au pouce) */
+  .navpill{position:fixed;left:0;right:0;bottom:0;z-index:60;border-radius:0;border-width:1px 0 0;background:var(--header);justify-content:space-around;
+    padding:.25rem .25rem calc(.25rem + env(safe-area-inset-bottom,0px));box-shadow:0 -4px 14px rgba(0,0,0,.25)}
+  .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:.15rem;padding:.4rem .15rem;font-size:.68rem;line-height:1.15;text-align:center;white-space:normal}
+  .tab i{margin:0;font-size:1.2rem}
+  .toast{bottom:6rem;max-width:92vw;text-align:center}
+  /* Filtres et bascule d'affichage */
+  .selects{grid-template-columns:1fr 1fr}
+  #resetFilters{flex:1 0 100%}
+  .vtitle{display:none}.viewbar{padding:.6rem}.seg{width:100%}.vbtn{flex:1;padding:.6rem .4rem}
+  /* Cartes plus compactes, zones tactiles plus grandes */
+  .grid{grid-template-columns:1fr}.cover{height:8.5rem}.gbody{padding:.8rem}
+  .star{font-size:1.5rem;padding:.2rem .15rem}.wish{width:2.6rem;height:2.6rem}.fiche{padding:.35rem .7rem}
+  .actions{flex-wrap:wrap}.actions .btn{flex:1}
+  /* Vue « Liste » : chaque ligne du tableau devient une fiche empilée */
+  .tablewrap{border:0;background:none;box-shadow:none;overflow:visible}
+  table,tbody,tr,td{display:block;width:100%}thead{display:none}
+  tr{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:.7rem .9rem;margin-bottom:.8rem;box-shadow:var(--shadow)}
+  td{border:0;padding:.25rem 0;display:flex;justify-content:space-between;align-items:center;gap:.8rem;text-align:right}
+  td:empty{display:none}
+  td::before{content:attr(data-label);flex:0 0 5.5rem;text-align:left;color:var(--muted);font-weight:700;font-size:.72rem;text-transform:uppercase}
+  td:first-child{display:block;text-align:left;font-size:1.05rem;padding-bottom:.4rem}td:first-child::before{content:none}
+  tbody tr:hover td{background:none}
+}
