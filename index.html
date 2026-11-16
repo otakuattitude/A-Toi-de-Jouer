@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Titan+One&display=swap">
-<link rel="stylesheet" href="style.css?v=8">
+<link rel="stylesheet" href="style.css?v=9">
 </head>
 <body>
 <header class="app-header"><div class="hwrap">
@@ -27,7 +27,7 @@
     <select id="themeSelect" aria-label="Thème"><option value="light">Clair</option><option value="dark">Sombre</option><option value="cvd">Daltonien</option></select>
   </div>
 </div></header>
-<div class="band" aria-hidden="true"></div>
+<div class="band" id="band"><section id="affiche" class="affiche" aria-label="Les jeux du jour" hidden></section></div>
 <main>
   <section id="tab-catalogue" class="panel">
     <div class="card" id="filtersCard">
@@ -61,6 +61,7 @@
   </section>
   <section id="tab-stats" class="panel" hidden><div id="stats"></div></section>
   <section id="tab-admin" class="panel" hidden>
+    <div class="card afcard" id="afCard"></div>
     <div class="card admincard">
       <h2><i class="fa-solid fa-shield-halved"></i> Espace Administrateur</h2>
       <p class="muted">Gestion de la sécurité de votre compte administrateur.</p>
@@ -72,7 +73,7 @@
         <button class="btn danger">Mettre à jour le mot de passe</button>
       </form>
     </div>
-    <p class="note">Pour ajouter ou modifier un jeu, éditez directement le Google Sheet : le catalogue se met à jour au rechargement de la page.</p>
+    <p class="note">Pour ajouter ou modifier un jeu du catalogue, éditez directement le Google Sheet : le catalogue se met à jour au rechargement de la page.</p>
   </section>
 </main>
 
@@ -98,8 +99,8 @@
   <div class="actions"><button class="btn primary" id="descClose">Fermer</button></div></dialog>
 <footer class="foot">Vignettes : <a href="https://boardgamegeek.com" target="_blank" rel="noopener">Powered by BoardGameGeek</a></footer>
 <div id="toast" class="toast" role="status" hidden></div>
-<script src="reco.js?v=8"></script>
-<script src="app.js?v=8"></script>
-<script src="admin.js?v=8"></script>
+<script src="reco.js?v=9"></script>
+<script src="app.js?v=9"></script>
+<script src="admin.js?v=9"></script>
 </body>
 </html>

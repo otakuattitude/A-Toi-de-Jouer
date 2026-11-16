@@ -253,3 +253,38 @@ button{touch-action:manipulation}
 
 /* ===== Mode invité (lecture seule) ===== */
 .stars.locked .star{opacity:.55;cursor:not-allowed}
+
+/* ===== Bandeau « Les jeux du jour » (dans le bandeau bleu) ===== */
+.band.has-aff{height:auto;padding:1.6rem 1rem 6.2rem}
+.aff-wrap{max-width:1280px;margin:0 auto}
+.aff-head{display:flex;align-items:center;gap:.9rem;flex-wrap:wrap;margin-bottom:1rem}
+.aff-pill{background:var(--yellow);color:var(--on-yellow);font-weight:800;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;padding:.25rem .8rem;border-radius:999px}
+.aff-head h2{color:var(--on-blue);font-weight:900;font-size:1.7rem;text-transform:uppercase;line-height:1.1}
+.aff-sub{margin-left:auto;color:var(--on-blue);font-weight:700}
+.aff-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,280px));gap:1rem}
+.aff-card{background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:1rem;overflow:hidden;display:flex;flex-direction:column}
+.aff-body{padding:.8rem;display:flex;flex-direction:column;gap:.55rem}
+.aff-msg{font-weight:600;font-size:.85rem;color:var(--muted)}
+@media (max-width:700px){
+  .band.has-aff{padding:1rem 0 3.6rem}.aff-wrap{padding-left:.9rem}.aff-head{padding-right:.9rem}.aff-head h2{font-size:1.25rem}.aff-sub{margin-left:0;width:100%}
+  .aff-cards{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-right:.9rem;padding-bottom:.3rem}.aff-card{flex:0 0 258px;scroll-snap-align:start}
+}
+/* ===== Admin : carte du bandeau ===== */
+.afcard{max-width:1000px;margin:0 auto 1rem;border-left:6px solid var(--yellow);padding:1.4rem}
+.afhead{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start;margin-bottom:1rem}.afhead h2{font-size:1.25rem;font-weight:800}
+.afstate{background:var(--sec);border:1px solid var(--border);border-radius:999px;padding:.2rem .8rem;font-weight:800;font-size:.75rem;white-space:nowrap}.afstate.on{background:var(--ok);color:var(--on-ok);border-color:var(--ok)}
+.afgrid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:1.6rem}.afcol{display:flex;flex-direction:column;gap:.6rem}
+.afcol label{font-size:.8rem;font-weight:600;color:var(--muted)}.afcol input{width:100%}
+.aflabel{display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.afcount{background:var(--sec);border:1px solid var(--border);border-radius:999px;padding:.05rem .65rem;color:var(--text)}
+.afrow{display:flex;align-items:center;gap:.6rem;background:var(--sec);border:1px solid var(--border);border-radius:.8rem;padding:.5rem .6rem}
+.afmove{display:flex;flex-direction:column;gap:2px}.afmove button{width:1.6rem;height:1.25rem;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:.4rem;cursor:pointer;font-size:.6rem}.afmove button:disabled{opacity:.35;cursor:default}
+.afinfo{flex:1;min-width:0;display:flex;flex-direction:column;gap:.35rem}.afinfo input{font-size:.8rem;font-weight:400;padding:.4rem .6rem}
+.afx{width:2rem;height:2rem;border-radius:50%;border:1px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer}
+.afsearch{position:relative}.afsearch i{position:absolute;left:.8rem;top:.8rem;color:var(--muted)}.afsearch input{width:100%;padding-left:2.3rem}
+.afsug{background:var(--card);border:1px solid var(--border);border-radius:.8rem;overflow:hidden;box-shadow:var(--shadow-up)}
+.afhit{display:flex;justify-content:space-between;align-items:center;gap:.6rem;padding:.55rem .8rem;border-bottom:1px solid var(--border)}.afhit small{display:block;color:var(--muted)}.afhit .btn{padding:.35rem .8rem;font-size:.8rem}
+.afnote{font-size:.8rem}
+.affoot{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:1.2rem;padding-top:1rem;border-top:1px solid var(--border)}
+.afbtns{display:flex;gap:.6rem}.afbtns .btn.danger{width:auto}
+@media (max-width:700px){.afgrid{grid-template-columns:1fr}.afcard{padding:1rem}.afhead{flex-direction:column}.afbtns,.afbtns .btn{width:100%}.afbtns{flex-direction:column}}

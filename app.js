@@ -32,7 +32,8 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
     $('#catalogue').innerHTML = '<p class="empty">Chargement de la ludothèque…</p>';
     S.loadError = '';
     try {
-      const [u, g, n, w] = await Promise.all([apiGet('users'), apiGet('jeux'), apiGet('Notes').catch(() => null), apiGet('Souhaits').catch(() => null)]);
+      const [u, g, n, w, af] = await Promise.all([apiGet('users'), apiGet('jeux'), apiGet('Notes').catch(() => null), apiGet('Souhaits').catch(() => null), apiGet('affiche').catch(() => null)]);
+      S.affiche = af && typeof af === 'object' && !Array.isArray(af) ? af : null;   // ancien script sans bandeau : on l'ignore
       S.members = (Array.isArray(u) ? u : []).map(x => ({ name: noAcc(x.prenom), admin: x.admin === true })).filter(x => x.name)
         .sort((a, b) => a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }));
       S.games = (Array.isArray(g) ? g : []).map(parseGame).filter(Boolean).map((x, i) => ({ ...x, i }));
@@ -210,6 +211,18 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
       <p class="muted">${res.rated ? 'Mets 4 ou 5 étoiles aux jeux que tu aimes : les suggestions apparaîtront ici.' : 'Note quelques jeux dans le catalogue pour que l\'algorithme comprenne tes goûts !'}</p></div>`;
   }
 
+  /* ---------- Bandeau « Les jeux du jour » ---------- */
+  function renderAffiche() {
+    const el = $('#affiche'), a = S.affiche;
+    const items = a && a.actif && Array.isArray(a.jeux) ? a.jeux.map(j => ({ g: S.games.find(x => x.key === keyOf(j.title)), msg: j.msg })).filter(x => x.g).slice(0, 4) : [];
+    const show = S.tab === 'catalogue' && items.length > 0;
+    el.hidden = !show; $('#band').classList.toggle('has-aff', show);
+    if (!show) { el.innerHTML = ''; return; }
+    el.innerHTML = `<div class="aff-wrap"><div class="aff-head"><span class="aff-pill">À l'affiche</span><h2>${esc(a.titre || 'Les jeux du jour !')}</h2>${a.soustitre ? `<span class="aff-sub">${esc(a.soustitre)}</span>` : ''}</div>
+      <div class="aff-cards">${items.map(({ g, msg }) => `<article class="aff-card">${cover(g)}<div class="aff-body"><div class="gtitle"><h3>${esc(g.title)}</h3><div class="gact">${wishBtn(g, true)}</div></div>
+        <div class="chips">${chipList([['fa-users', '', g.players + ' j.'], ['fa-clock', '', g.duree]])}</div>${msg ? `<p class="aff-msg">« ${esc(msg)} »</p>` : ''}</div></article>`).join('')}</div></div>`;
+  }
+
   /* ---------- Profils, rôles, onglets ---------- */
   function renderProfiles() {
     const opts = S.members.map(m => `<option value="${esc(m.name)}">${esc(m.name)}${m.admin ? ' (admin)' : ''}</option>`).join('');
@@ -242,6 +255,8 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
     if (S.tab === 'catalogue') renderCatalogue();
     if (S.tab === 'foryou') renderForYou();
     if (S.tab === 'stats' && S.admin) Admin.renderStats();
+    if (S.tab === 'admin' && S.admin) Admin.renderAffiche();
+    renderAffiche();
   }
   function setTheme(t) {
     if (!['dark', 'light', 'cvd'].includes(t)) t = 'light';
@@ -296,6 +311,6 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
 
     if (await load()) { buildFilters(); renderProfiles(); renderCatalogue(); askWho(); }
   }
-  window.App = { S, $, esc, apiPost, toast };
+  window.App = { S, $, esc, apiPost, toast, keyOf, refresh };
   document.addEventListener('DOMContentLoaded', init);
 })();
