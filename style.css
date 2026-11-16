@@ -221,3 +221,33 @@ button{touch-action:manipulation}
   .rinfo small{display:block;color:var(--muted);font-size:.75rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .row .wish{width:2.4rem;height:2.4rem}
 }
+
+/* ===== Mobile v3 : vignette + ambiance + nom, fiche dépliée sur place ===== */
+.lbl{display:inline}
+.more:empty{display:none}
+.more .gfoot{border-top:1px solid var(--border);margin-top:.7rem;padding:.7rem 0 0}
+.more .desc{margin:.7rem 0 0;font-size:.9rem}
+@media (max-width:700px){
+  .lbl{display:block}
+  .tile.open{grid-column:1/-1}
+  .tile.open .tcover{height:11rem}
+  .tile .more{padding:0 .7rem .7rem}
+  .tcover .ambbadge{max-width:calc(100% - 3.2rem);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.68rem;padding:.05rem .45rem}
+  .tcover .mine{bottom:.3rem}
+  .row{display:block}.rhead{display:flex;align-items:center;gap:.7rem}
+  .row .more{padding-top:.6rem}
+}
+
+/* ===== Mobile v4 : liste alignée, barre du bas plus basse, compteurs sans parenthèses ===== */
+.cnt::before{content:"("}.cnt::after{content:")"}      /* ordinateur : « Catalogue (71) » comme avant */
+@media (max-width:700px){
+  .rows{grid-template-columns:minmax(0,1fr)}               /* la liste ne dépasse plus de l'écran */
+  .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cnt::before,.cnt::after{content:none}
+  .cnt{margin-left:.15rem;background:rgba(0,0,0,.2);color:inherit;border-radius:999px;padding:0 .35rem;font-size:.65rem;font-weight:800}
+  body{padding-bottom:4.6rem}
+  .navpill{padding:.2rem .2rem calc(.2rem + env(safe-area-inset-bottom,0px))}
+  .tab{padding:.3rem .1rem;gap:.05rem}
+  .tab i{font-size:1.05rem}
+  .toast{bottom:5rem}
+}

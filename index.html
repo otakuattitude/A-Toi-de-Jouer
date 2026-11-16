@@ -12,11 +12,11 @@
   <div class="brand"><div class="logo"><i class="fa-solid fa-dice"></i></div>
     <div><h1>À TOI DE JOUER !</h1><p class="muted">Ludothèque associative</p></div></div>
   <nav class="navpill" aria-label="Sections">
-    <button class="tab active" data-tab="catalogue"><i class="fa-solid fa-chess-board"></i>Catalogue (<span id="navCount">0</span>)</button>
-    <button class="tab" data-tab="foryou"><i class="fa-solid fa-wand-magic-sparkles ic-amber"></i>Pour moi</button>
-    <button class="tab" data-tab="wishlist"><i class="fa-solid fa-heart ic-rose"></i>Souhaits (<span id="wishCount">0</span>)</button>
-    <button class="tab" data-tab="stats" data-admin hidden><i class="fa-solid fa-chart-pie ic-emerald"></i>Statistiques</button>
-    <button class="tab" data-tab="admin" data-admin hidden><i class="fa-solid fa-shield-halved ic-rose"></i>Admin</button>
+    <button class="tab active" data-tab="catalogue"><i class="fa-solid fa-chess-board"></i><span class="lbl">Catalogue <span class="cnt"><span id="navCount">0</span></span></span></button>
+    <button class="tab" data-tab="foryou"><i class="fa-solid fa-wand-magic-sparkles ic-amber"></i><span class="lbl">Pour moi</span></button>
+    <button class="tab" data-tab="wishlist"><i class="fa-solid fa-heart ic-rose"></i><span class="lbl">Souhaits <span class="cnt"><span id="wishCount">0</span></span></span></button>
+    <button class="tab" data-tab="stats" data-admin hidden><i class="fa-solid fa-chart-pie ic-emerald"></i><span class="lbl">Statistiques</span></button>
+    <button class="tab" data-tab="admin" data-admin hidden><i class="fa-solid fa-shield-halved ic-rose"></i><span class="lbl">Admin</span></button>
   </nav>
   <div class="hright">
     <div class="profilebox"><i class="fa-solid fa-user-circle ic-amber big"></i>
@@ -93,7 +93,6 @@
 <dialog id="descDialog"><h2 id="descTitle"></h2><p id="descText" class="desc"></p>
   <div class="actions"><button class="btn primary" id="descClose">Fermer</button></div></dialog>
 <footer class="foot">Vignettes : <a href="https://boardgamegeek.com" target="_blank" rel="noopener">Powered by BoardGameGeek</a></footer>
-<dialog id="gameDialog" class="sheet"><div class="sheetin"><div id="gameDetail"></div><div class="actions"><button class="btn primary" id="gameClose">Fermer</button></div></div></dialog>
 <div id="toast" class="toast" role="status" hidden></div>
 <script src="app.js"></script>
 <script src="admin.js"></script>
