@@ -24,8 +24,8 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
     const m = {}; Object.keys(raw).forEach(k => m[normHead(k)] = raw[k]);
     const f = n => String(m[n] ?? '').trim(), title = f('JEU');
     if (!title) return null;
-    return { title, key: keyOf(title), amb: [f('AMBIANCE'), f('AMBIANCE2')].filter(Boolean), duree: f('DUREE') || '—', players: f('JOUEURS') || '?',
-      niveau: f('NIVEAU'), modes: [f('MODE'), f('MODE2')].filter(Boolean), formats: [f('FORMAT'), f('FORMAT2')].filter(Boolean),
+    return { title, key: keyOf(title), amb: [f('AMBIANCE'), f('AMBIANCE2')].flatMap(x => x.split(/\s*\/\s*/)).filter(Boolean), duree: f('DUREE') || '—', players: f('JOUEURS') || '?',
+      niveau: f('NIVEAU'), modes: [f('MODE'), f('MODE2')].flatMap(x => x.split(/\s*\/\s*/)).filter(Boolean), formats: [f('FORMAT'), f('FORMAT2')].flatMap(x => x.split(/\s*\/\s*/)).filter(Boolean),
       img: f('IMG') || f('IMAGE'), desc: f('DESCRIPTION') || f('RESUME') };
   }
   async function load() {
@@ -134,9 +134,10 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
     .filter(c => c[2]).map(c => `<span class="chip ${c[1]}"><i class="fa-solid ${c[0]}"></i>${esc(c[2])}</span>`).join('');
   const card = g => `<article class="game" data-tip="${g.i}"><div>${cover(g)}<div class="gbody"><div class="gtitle"><h3>${esc(g.title)}</h3>${descBtn(g)}</div><div class="chips">${chips(g)}</div></div></div>
     <div class="gfoot"><span class="muted b">Ma note :</span><div>${stars(g)}</div></div></article>`;
-  const recCard = g => `<article class="card rec" data-tip="${g.i}"><div><div class="gtitle"><div><h4>${esc(g.title)}</h4><span class="pill-amber">Coup de cœur potentiel</span></div>${descBtn(g)}</div>
-    <p class="muted">Similaire en <b class="ic-purple">${esc(g.amb.join(' / '))}</b>${g.modes.length ? ` (${esc(g.modes.join(' / '))})` : ''}.</p></div>
-    <div class="recfoot"><span class="muted">Durée : ${esc(g.duree)}</span><em>Recommandé pour toi</em></div></article>`;
+  const recCard = p => { const g = p.game; return `<article class="card rec" data-tip="${g.i}"><div><div class="gtitle"><div><h4>${esc(g.title)}</h4>
+    <span class="pill-amber">${p.kind === 'popular' ? 'Apprécié dans l\'asso' : 'Coup de cœur potentiel'}</span></div>${descBtn(g)}</div>
+    <p class="muted">${p.kind === 'popular' ? `Noté ${p.avg.toFixed(1)} ★ par ${p.n} membre${p.n > 1 ? 's' : ''}.` : (p.because ? `Parce que tu as aimé <b class="ic-purple">${esc(p.because)}</b>` : 'Proche de tes goûts') + (g.amb.length ? ` — ${esc(g.amb.join(' / '))}` : '') + '.'}</p></div>
+    <div class="recfoot"><span class="muted">Durée : ${esc(g.duree)}</span><em>${p.kind === 'popular' ? 'Populaire' : 'Recommandé pour toi'}</em></div></article>`; };
   /* ---------- Mobile : tuiles / lignes compactes + fiche détaillée au toucher ---------- */
   const isMobile = () => matchMedia('(max-width:700px)').matches;
   const thumb = g => /^https?:\/\//i.test(g.img) ? `<img src="${esc(g.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : '<span aria-hidden="true">🎲</span>';
@@ -190,15 +191,13 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbx3-Iq9L310yrrJdX65rqCW
     else $('#wishlist').innerHTML = '<div class="card empty-card"><i class="fa-solid fa-heart ic-rose big"></i><h3>Ta liste est vide</h3><p class="muted">Clique sur le cœur d\'un jeu du catalogue pour le retrouver ici.</p></div>';
   }
   function renderForYou() {
-    const r = S.ratings[S.user] || {}, liked = S.games.filter(g => r[g.key] >= 4), w = {};
-    liked.forEach(g => { [...g.amb.map(x => 'a:' + x), ...g.modes.map(x => 'm:' + x)].forEach(k => w[k] = (w[k] || 0) + r[g.key]); });
-    const list = S.games.filter(g => !r[g.key]).map(g => ({ g, s: g.amb.reduce((t, x) => t + 2 * (w['a:' + x] || 0), 0) + g.modes.reduce((t, x) => t + (w['m:' + x] || 0), 0) + Math.random() * 3 }))
-      .filter(x => liked.length && x.s > 3).sort((x, y) => y.s - x.s).slice(0, 9).map(x => x.g);
     $('#recUser').textContent = S.user;
-    $('#foryouIntro').textContent = 'Sélection sur-mesure basée sur tes jeux notés 4 ou 5 étoiles.';
-    $('#foryou').innerHTML = list.length ? `<div class="recgrid">${list.map(recCard).join('')}</div>` :
-      `<div class="card empty-card"><i class="fa-solid fa-star ic-amber big"></i><h3>${liked.length ? 'Aucune recommandation ciblée' : 'Pas assez de coups de cœur'}</h3>
-      <p class="muted">${liked.length ? 'Tu as noté tous les jeux de ces catégories ! Explore d\'autres ambiances.' : 'Note quelques jeux à 4 ou 5 étoiles dans le catalogue pour que l\'algorithme comprenne tes goûts !'}</p></div>`;
+    if (!window.Reco) { $('#foryou').innerHTML = '<div class="card empty-card"><h3>Module de recommandations absent</h3><p class="muted">Le fichier reco.js n\'a pas été mis en ligne.</p></div>'; return; }
+    const res = Reco.recommend(S.games, S.ratings, S.user);
+    $('#foryouIntro').textContent = res.liked ? `Sélection basée sur tes ${res.liked} jeu${res.liked > 1 ? 'x' : ''} noté${res.liked > 1 ? 's' : ''} 4 ou 5 étoiles.` : 'Sélection sur-mesure basée sur tes jeux notés 4 ou 5 étoiles.';
+    $('#foryou').innerHTML = res.picks.length ? `<div class="recgrid">${res.picks.map(recCard).join('')}</div>` :
+      `<div class="card empty-card"><i class="fa-solid fa-star ic-amber big"></i><h3>${res.rated ? 'Pas encore de coup de cœur' : 'Pas assez de notes'}</h3>
+      <p class="muted">${res.rated ? 'Mets 4 ou 5 étoiles aux jeux que tu aimes : les suggestions apparaîtront ici.' : 'Note quelques jeux dans le catalogue pour que l\'algorithme comprenne tes goûts !'}</p></div>`;
   }
 
   /* ---------- Profils, rôles, onglets ---------- */

@@ -1,0 +1,914 @@
+[
+ {
+  "title": "6 qui prend !",
+  "amb": [
+   "😂 Fun",
+   "🧠 Stratégie"
+  ],
+  "duree": "⚡ 15–30 min",
+  "players": "2–10",
+  "niveau": "🌱 Débutant",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "7 Wonders",
+  "amb": [
+   "🧠 Stratégie"
+  ],
+  "duree": "🎲 30–60 min",
+  "players": "3–7",
+  "niveau": "🙂 Intermédiaire",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "7 Wonders Architects",
+  "amb": [
+   "🧠 Stratégie"
+  ],
+  "duree": "🎲 30–60 min",
+  "players": "2–7",
+  "niveau": "🌱 Débutant",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "7 Wonders Duel",
+  "amb": [
+   "🧠 Stratégie"
+  ],
+  "duree": "🎲 30–60 min",
+  "players": "2.0",
+  "niveau": "🙂 Intermédiaire",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "Athlètes de compète",
+  "amb": [],
+  "duree": "—",
+  "players": "?",
+  "niveau": "",
+  "modes": [],
+  "formats": []
+ },
+ {
+  "title": "Azul",
+  "amb": [
+   "🧠 Stratégie"
+  ],
+  "duree": "🎲 30–60 min",
+  "players": "2–4",
+  "niveau": "🙂 Intermédiaire",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "♟️ Plateau"
+  ]
+ },
+ {
+  "title": "Bang - Wanted !",
+  "amb": [],
+  "duree": "—",
+  "players": "?",
+  "niveau": "",
+  "modes": [],
+  "formats": []
+ },
+ {
+  "title": "Bazar Bizarre",
+  "amb": [
+   "😂 Fun"
+  ],
+  "duree": "⚡ 15–30 min",
+  "players": "2–8",
+  "niveau": "🌱 Débutant",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "Blokus",
+  "amb": [
+   "🧠 Stratégie"
+  ],
+  "duree": "🎲 30–60 min",
+  "players": "2–4",
+  "niveau": "🌱 Débutant",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "♟️ Plateau"
+  ]
+ },
+ {
+  "title": "Bohnanza",
+  "amb": [],
+  "duree": "—",
+  "players": "?",
+  "niveau": "",
+  "modes": [],
+  "formats": []
+ },
+ {
+  "title": "Bomb Busters",
+  "amb": [
+   "🧩 Réflexion"
+  ],
+  "duree": "🎲 30–60 min",
+  "players": "2–5",
+  "niveau": "🙂 Intermédiaire",
+  "modes": [
+   "🤝 Coopératif"
+  ],
+  "formats": [
+   "♟️ Plateau"
+  ]
+ },
+ {
+  "title": "Boursicocotte",
+  "amb": [],
+  "duree": "—",
+  "players": "?",
+  "niveau": "",
+  "modes": [],
+  "formats": []
+ },
+ {
+  "title": "Catane",
+  "amb": [
+   "🧠 Stratégie"
+  ],
+  "duree": "🕰️ 1–2 h",
+  "players": "3–4",
+  "niveau": "🙂 Intermédiaire",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "♟️ Plateau"
+  ]
+ },
+ {
+  "title": "Catane Duel",
+  "amb": [
+   "🧠 Stratégie"
+  ],
+  "duree": "🎲 30–60 min",
+  "players": "2.0",
+  "niveau": "🙂 Intermédiaire",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "Celestia",
+  "amb": [
+   "😂 Fun"
+  ],
+  "duree": "⚡ 15–30 min",
+  "players": "2–6",
+  "niveau": "🌱 Débutant",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "🎲 Dés",
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "Citadelles",
+  "amb": [
+   "🧠 Stratégie",
+   "😂 Fun"
+  ],
+  "duree": "🎲 30–60 min",
+  "players": "2–8",
+  "niveau": "🙂 Intermédiaire",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "Codenames",
+  "amb": [
+   "🧩 Réflexion",
+   "😂 Fun"
+  ],
+  "duree": "⚡ 15–30 min",
+  "players": "4–8+",
+  "niveau": "🌱 Débutant",
+  "modes": [
+   "🧑‍🤝‍🧑 Équipes"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "Concept",
+  "amb": [
+   "🧩 Réflexion",
+   "😂 Fun"
+  ],
+  "duree": "🎲 30–60 min",
+  "players": "4–12",
+  "niveau": "🌱 Débutant",
+  "modes": [
+   "🧑‍🤝‍🧑 Équipes"
+  ],
+  "formats": [
+   "♟️ Plateau"
+  ]
+ },
+ {
+  "title": "Cracklist",
+  "amb": [],
+  "duree": "—",
+  "players": "?",
+  "niveau": "",
+  "modes": [],
+  "formats": []
+ },
+ {
+  "title": "Diggers",
+  "amb": [
+   "😂 Fun",
+   "🧠 Stratégie"
+  ],
+  "duree": "⚡ 15–30 min",
+  "players": "?",
+  "niveau": "🌱 Débutant",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "Dobble",
+  "amb": [
+   "😂 Fun"
+  ],
+  "duree": "⚡ 15–30 min",
+  "players": "2–8",
+  "niveau": "🌱 Débutant",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "Dunes - Insurrection",
+  "amb": [],
+  "duree": "—",
+  "players": "?",
+  "niveau": "",
+  "modes": [],
+  "formats": []
+ },
+ {
+  "title": "Exit - le trésor englouti",
+  "amb": [],
+  "duree": "—",
+  "players": "?",
+  "niveau": "",
+  "modes": [],
+  "formats": []
+ },
+ {
+  "title": "Exploding Kittens",
+  "amb": [
+   "😂 Fun"
+  ],
+  "duree": "⚡ 15–30 min",
+  "players": "2–5",
+  "niveau": "🌱 Débutant",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "Flip7 vengeance",
+  "amb": [],
+  "duree": "—",
+  "players": "?",
+  "niveau": "",
+  "modes": [],
+  "formats": []
+ },
+ {
+  "title": "Galérapagos",
+  "amb": [
+   "😂 Fun"
+  ],
+  "duree": "🎲 30–60 min",
+  "players": "3–12",
+  "niveau": "🌱 Débutant",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "♟️ Plateau"
+  ]
+ },
+ {
+  "title": "Hanabi",
+  "amb": [
+   "🧩 Réflexion"
+  ],
+  "duree": "⚡ 15–30 min",
+  "players": "2–5",
+  "niveau": "🙂 Intermédiaire",
+  "modes": [
+   "🤝 Coopératif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "Harmony",
+  "amb": [],
+  "duree": "—",
+  "players": "?",
+  "niveau": "",
+  "modes": [],
+  "formats": []
+ },
+ {
+  "title": "Harry Potter - Bataille à Poudlard",
+  "amb": [],
+  "duree": "—",
+  "players": "?",
+  "niveau": "",
+  "modes": [],
+  "formats": []
+ },
+ {
+  "title": "Heat",
+  "amb": [],
+  "duree": "—",
+  "players": "?",
+  "niveau": "",
+  "modes": [],
+  "formats": []
+ },
+ {
+  "title": "Hilo",
+  "amb": [
+   "🧠 Stratégie"
+  ],
+  "duree": "⚡ 15–30 min",
+  "players": "2–6",
+  "niveau": "🌱 Débutant",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "Hitster",
+  "amb": [
+   "😂 Fun"
+  ],
+  "duree": "🎲 30–60 min",
+  "players": "2–10+",
+  "niveau": "🌱 Débutant",
+  "modes": [
+   "⚔️ Compétitif",
+   "🧑‍🤝‍🧑 Équipes"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "Just One",
+  "amb": [],
+  "duree": "—",
+  "players": "?",
+  "niveau": "",
+  "modes": [],
+  "formats": []
+ },
+ {
+  "title": "Kontour",
+  "amb": [],
+  "duree": "—",
+  "players": "?",
+  "niveau": "",
+  "modes": [],
+  "formats": []
+ },
+ {
+  "title": "Kraken laken",
+  "amb": [],
+  "duree": "—",
+  "players": "?",
+  "niveau": "",
+  "modes": [],
+  "formats": []
+ },
+ {
+  "title": "La Crique des Pirates",
+  "amb": [
+   "😂 Fun",
+   "🧠 Stratégie"
+  ],
+  "duree": "🕰️ 1–2 h",
+  "players": "3–5",
+  "niveau": "🙂 Intermédiaire",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "🎲 Dés",
+   "♟️ Plateau"
+  ]
+ },
+ {
+  "title": "Le Désert Interdit",
+  "amb": [
+   "🧩 Réflexion"
+  ],
+  "duree": "🎲 30–60 min",
+  "players": "2–5",
+  "niveau": "🙂 Intermédiaire",
+  "modes": [
+   "🤝 Coopératif"
+  ],
+  "formats": [
+   "♟️ Plateau"
+  ]
+ },
+ {
+  "title": "Le destin de la communauté",
+  "amb": [],
+  "duree": "—",
+  "players": "?",
+  "niveau": "",
+  "modes": [],
+  "formats": []
+ },
+ {
+  "title": "Luz",
+  "amb": [
+   "🧠 Stratégie"
+  ],
+  "duree": "🎲 30–60 min",
+  "players": "3–5",
+  "niveau": "🙂 Intermédiaire",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "Maki San",
+  "amb": [],
+  "duree": "—",
+  "players": "?",
+  "niveau": "",
+  "modes": [],
+  "formats": []
+ },
+ {
+  "title": "Monopoly Deal",
+  "amb": [
+   "😂 Fun",
+   "🧠 Stratégie"
+  ],
+  "duree": "⚡ 15–30 min",
+  "players": "2–5",
+  "niveau": "🌱 Débutant",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "Odin",
+  "amb": [
+   "🧠 Stratégie"
+  ],
+  "duree": "🎲 30–60 min",
+  "players": "2–6",
+  "niveau": "🙂 Intermédiaire",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "Olemains !",
+  "amb": [
+   "😂 Fun"
+  ],
+  "duree": "⚡ 15–30 min",
+  "players": "?",
+  "niveau": "🌱 Débutant",
+  "modes": [
+   "🧑‍🤝‍🧑 Équipes"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "P comme Pizza",
+  "amb": [
+   "😂 Fun"
+  ],
+  "duree": "⚡ 15–30 min",
+  "players": "2–8",
+  "niveau": "🌱 Débutant",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "Pandemic",
+  "amb": [
+   "🧩 Réflexion"
+  ],
+  "duree": "🎲 30–60 min",
+  "players": "2–4",
+  "niveau": "🙂 Intermédiaire",
+  "modes": [
+   "🤝 Coopératif"
+  ],
+  "formats": [
+   "♟️ Plateau"
+  ]
+ },
+ {
+  "title": "petits meurtres et faits divers",
+  "amb": [],
+  "duree": "—",
+  "players": "?",
+  "niveau": "",
+  "modes": [],
+  "formats": []
+ },
+ {
+  "title": "Poker des Cafards",
+  "amb": [],
+  "duree": "—",
+  "players": "?",
+  "niveau": "",
+  "modes": [],
+  "formats": []
+ },
+ {
+  "title": "Risk",
+  "amb": [
+   "🧠 Stratégie"
+  ],
+  "duree": "🔥 2 h +",
+  "players": "2–6",
+  "niveau": "🙂 Intermédiaire",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "♟️ Plateau"
+  ]
+ },
+ {
+  "title": "Saboteurs",
+  "amb": [
+   "😂 Fun"
+  ],
+  "duree": "🎲 30–60 min",
+  "players": "3–10",
+  "niveau": "🌱 Débutant",
+  "modes": [
+   "🧑‍🤝‍🧑 Équipes"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "Sea Salt & Paper",
+  "amb": [
+   "🧠 Stratégie"
+  ],
+  "duree": "⚡ 15–30 min",
+  "players": "2–4",
+  "niveau": "🌱 Débutant",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "Skyjo",
+  "amb": [
+   "🧠 Stratégie"
+  ],
+  "duree": "🎲 30–60 min",
+  "players": "2–8",
+  "niveau": "🌱 Débutant",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "Skyjo Action",
+  "amb": [
+   "😂 Fun",
+   "🧠 Stratégie"
+  ],
+  "duree": "🎲 30–60 min",
+  "players": "2–8",
+  "niveau": "🌱 Débutant",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "Smile Life",
+  "amb": [
+   "😂 Fun"
+  ],
+  "duree": "🎲 30–60 min",
+  "players": "2–5",
+  "niveau": "🌱 Débutant",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "Splendor",
+  "amb": [
+   "🧠 Stratégie"
+  ],
+  "duree": "🎲 30–60 min",
+  "players": "2–4",
+  "niveau": "🌱 Débutant",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "♟️ Plateau"
+  ]
+ },
+ {
+  "title": "Taco Chat Bouc Cheese Pizza",
+  "amb": [
+   "😂 Fun"
+  ],
+  "duree": "⚡ 15–30 min",
+  "players": "2–8",
+  "niveau": "🌱 Débutant",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "Terraforming mars dice",
+  "amb": [],
+  "duree": "—",
+  "players": "?",
+  "niveau": "",
+  "modes": [],
+  "formats": []
+ },
+ {
+  "title": "That's Not a Hat",
+  "amb": [
+   "😂 Fun"
+  ],
+  "duree": "⚡ 15–30 min",
+  "players": "3–8",
+  "niveau": "🌱 Débutant",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "The Crew",
+  "amb": [
+   "🧩 Réflexion"
+  ],
+  "duree": "🎲 30–60 min",
+  "players": "2–5",
+  "niveau": "🙂 Intermédiaire",
+  "modes": [
+   "🤝 Coopératif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "The Gang",
+  "amb": [],
+  "duree": "—",
+  "players": "?",
+  "niveau": "",
+  "modes": [],
+  "formats": []
+ },
+ {
+  "title": "The Mind",
+  "amb": [
+   "🧩 Réflexion"
+  ],
+  "duree": "⚡ 15–30 min",
+  "players": "2–4",
+  "niveau": "🙂 Intermédiaire",
+  "modes": [
+   "🤝 Coopératif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "Toy battle",
+  "amb": [],
+  "duree": "—",
+  "players": "?",
+  "niveau": "",
+  "modes": [],
+  "formats": []
+ },
+ {
+  "title": "Trans Orient",
+  "amb": [],
+  "duree": "—",
+  "players": "?",
+  "niveau": "",
+  "modes": [],
+  "formats": []
+ },
+ {
+  "title": "Trio",
+  "amb": [
+   "🧠 Stratégie"
+  ],
+  "duree": "⚡ 15–30 min",
+  "players": "3–6",
+  "niveau": "🌱 Débutant",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "Unlock - l'ascension",
+  "amb": [],
+  "duree": "—",
+  "players": "?",
+  "niveau": "",
+  "modes": [],
+  "formats": []
+ },
+ {
+  "title": "Unlock - la voie du sabre",
+  "amb": [],
+  "duree": "—",
+  "players": "?",
+  "niveau": "",
+  "modes": [],
+  "formats": []
+ },
+ {
+  "title": "Unlock!",
+  "amb": [
+   "🕵️ Enquête",
+   "🧩 Réflexion"
+  ],
+  "duree": "🕰️ 1–2 h",
+  "players": "1–6",
+  "niveau": "🙂 Intermédiaire",
+  "modes": [
+   "🤝 Coopératif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "UNO",
+  "amb": [
+   "😂 Fun"
+  ],
+  "duree": "⚡ 15–30 min",
+  "players": "2–10",
+  "niveau": "🌱 Débutant",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "UNO Flip",
+  "amb": [
+   "😂 Fun"
+  ],
+  "duree": "⚡ 15–30 min",
+  "players": "2–10",
+  "niveau": "🌱 Débutant",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "UNO No Mercy",
+  "amb": [
+   "😂 Fun"
+  ],
+  "duree": "⚡ 15–30 min",
+  "players": "2–6",
+  "niveau": "🌱 Débutant",
+  "modes": [
+   "⚔️ Compétitif"
+  ],
+  "formats": [
+   "🃏 Cartes"
+  ]
+ },
+ {
+  "title": "Villainous",
+  "amb": [],
+  "duree": "—",
+  "players": "?",
+  "niveau": "",
+  "modes": [],
+  "formats": []
+ }
+]
